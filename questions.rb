@@ -21,6 +21,21 @@ class User
         User.new(data.last)
     end
 
+    def self.find_by_name(fname, lname)
+        data = QuestionsDB.instance.execute(<<-SQL, fname, lname)
+        SELECT 
+            * 
+        FROM 
+            users 
+        WHERE 
+        users.fname = ? AND users.lname = ?
+
+        SQL
+        return nil if data.length == 0
+        User.new(data.last)
+        
+    end
+
     def initialize(options)
         @id = options['id']
         @fname = options['fname']
