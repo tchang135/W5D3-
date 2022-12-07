@@ -18,7 +18,7 @@ class User
 
     def self.find_by_id(id)
         data = QuestionsDB.instance.execute('SELECT * FROM users WHERE users.id = id')
-        User.new(data)
+        User.new(data.last)
     end
 
     def initialize(options)
@@ -56,9 +56,23 @@ end
 
 class Question 
     attr_accessor :id, :title, :body, :author_id
+    
     def self.find_by_id(id)
         data = QuestionsDB.instance.execute('SELECT * FROM questions WHERE questions.id = id' )
-        debugger
+        Question.new(data.first)
+    end
+
+    def self.find_by_author_id(author_id)
+        data = QuestionsDB.instance.execute(<<-SQL, author_id)
+        SELECT 
+            * 
+        FROM 
+            questions 
+        WHERE 
+            author_id = ?
+
+        SQL
+        return nil if data.length == 0 
         Question.new(data.first)
     end
 
@@ -71,7 +85,7 @@ class Question
 
     def create 
         raise "#{self} already in database" if @id
-        QuestionsDB.instance.execute (<<-SQL, @title, @body, @author_id)
+        QuestionsDB.instance.execute(<<-SQL, @title, @body, @author_id)
             INSERT INTO 
                 questions (title, body, author_id)
             VALUES 
@@ -82,16 +96,16 @@ class Question
 
     def update 
         raise "#{self} not in database" unless @id 
-        QuestionsDB.instance.execute (<<-SQL, @title, @body, @author_id)
+        QuestionsDB.instance.execute(<<-SQL, @title, @body, @author_id)
             UPDATE
                 questions
             SET 
-            title = ?, body = ?, author_id = ?
+                title = ?, body = ?, author_id = ?
             WHERE 
                 id = ? 
-        SQL
+            SQL
     end
 
-
-
 end
+
+
