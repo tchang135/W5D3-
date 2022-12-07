@@ -17,9 +17,9 @@ CREATE TABLE questions (
     id INTEGER PRIMARY KEY, 
     title TEXT NOT NULL, 
     body TEXT NOT NULL, 
-    associated_author_id INTEGER NOT NULL,  
+    author_id INTEGER NOT NULL,  
 
-FOREIGN KEY (associated_author_id) REFERENCES users(id)
+FOREIGN KEY (author_id) REFERENCES users(id)
 );
 
 CREATE TABLE question_follows (
@@ -59,7 +59,7 @@ VALUES
 
 
 INSERT INTO 
-    questions (title, body, associated_author_id)
+    questions (title, body, author_id)
 VALUES 
     ('What is Big O?', 'Im having trouble understanding the concept of Big O, could someone explain it to me?', 1),
     ('What is Recursion', 'Im stuck on the rescursion HW, could someone help me with question 5?', 2);
